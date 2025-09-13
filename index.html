@@ -3,13 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>股指期货贴水计算器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --light: #f5f7fa;
+            --gray: #7f8c8d;
+            --white: #ffffff;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
         
         body {
@@ -18,71 +35,107 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 0;
+            color: var(--secondary);
+        }
+        
+        .app-header {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .app-header h1 {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+        
+        .app-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
         }
         
         .container {
-            max-width: 700px;
             width: 100%;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-top: 20px;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 28px;
-        }
-        
-        .description {
-            text-align: center;
-            color: #7f8c8d;
-            margin-bottom: 30px;
-            line-height: 1.5;
+            max-width: 100%;
+            background: var(--white);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-top: 0;
+            flex: 1;
         }
         
         .input-group {
             margin-bottom: 20px;
+            position: relative;
         }
         
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #34495e;
+            color: var(--secondary);
+            font-size: 1rem;
         }
         
         select, input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 16px;
             border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--white);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
         }
         
         select:focus, input:focus {
-            border-color: #3498db;
+            border-color: var(--primary);
             outline: none;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .button-group {
+            position: sticky;
+            bottom: 0;
+            background: var(--white);
+            padding: 16px 0;
+            margin: 20px -20px -20px;
+            border-top: 1px solid #eee;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
         }
         
         button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
+            width: calc(100% - 40px);
+            margin: 0 20px;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
             border: none;
-            border-radius: 8px;
-            font-size: 18px;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 10px;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
         
         button:hover {
@@ -97,23 +150,25 @@
         .result {
             margin-top: 30px;
             padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: var(--light);
+            border-radius: var(--border-radius);
             display: none;
         }
         
         .result h3 {
-            color: #2c3e50;
+            color: var(--secondary);
             margin-bottom: 15px;
             text-align: center;
+            font-size: 1.2rem;
         }
         
         .result-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
             border-bottom: 1px dashed #ddd;
+            font-size: 0.95rem;
         }
         
         .result-item:last-child {
@@ -124,26 +179,26 @@
         
         .result-value {
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--secondary);
         }
         
         .highlight {
-            color: #e74c3c;
-            font-size: 1.2em;
+            color: var(--accent);
+            font-size: 1.1rem;
             font-weight: 700;
         }
         
         .footer {
-            margin-top: 30px;
+            margin-top: 20px;
             text-align: center;
-            color: #7f8c8d;
-            font-size: 14px;
+            color: var(--gray);
+            font-size: 0.8rem;
             width: 100%;
-            max-width: 700px;
             padding: 15px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
         }
         
         .footer p {
@@ -152,27 +207,76 @@
         
         .wechat {
             font-weight: 600;
-            color: #3498db;
+            color: var(--primary);
         }
         
-        @media (max-width: 480px) {
-            .container {
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(52, 152, 219, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 响应式设计 */
+        @media (min-width: 768px) {
+            body {
                 padding: 20px;
+                justify-content: center;
             }
             
-            h1 {
-                font-size: 24px;
+            .container {
+                max-width: 500px;
+                border-radius: var(--border-radius);
+            }
+            
+            .app-header {
+                max-width: 500px;
+                border-radius: var(--border-radius) var(--border-radius) 0 0;
+                margin-top: 20px;
+            }
+            
+            .button-group {
+                border-radius: 0 0 var(--border-radius) var(--border-radius);
+            }
+        }
+        
+        @media (max-width: 380px) {
+            .app-header h1 {
+                font-size: 1.2rem;
+            }
+            
+            label, select, input, button {
+                font-size: 0.9rem;
+            }
+            
+            .result-item {
+                font-size: 0.85rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="app-header">
         <h1>股指期货贴水计算器</h1>
-        <p class="description">计算股指期货合约的年化收益率、保证金需求及滚仓收益</p>
-        
+        <p>计算年化收益率、保证金需求及滚仓收益</p>
+    </div>
+    
+    <div class="container">
         <div class="input-group">
-            <label for="contract">合约时间</label>
+            <label for="contract"><i class="fas fa-calendar-alt"></i> 合约时间</label>
             <select id="contract">
                 <option value="">-- 请选择合约 --</option>
                 <!-- 合约选项将由JavaScript动态生成 -->
@@ -180,17 +284,17 @@
         </div>
         
         <div class="input-group">
-            <label for="price">购买价格</label>
+            <label for="price"><i class="fas fa-tag"></i> 购买价格</label>
             <input type="number" id="price" placeholder="例如：7326">
         </div>
         
         <div class="input-group">
-            <label for="basis">期现差（正负忽略）</label>
+            <label for="basis"><i class="fas fa-chart-line"></i> 期现差（正负忽略）</label>
             <input type="number" id="basis" placeholder="例如：96.88">
         </div>
         
         <div class="input-group">
-            <label for="quantity">购买数量（手）</label>
+            <label for="quantity"><i class="fas fa-cubes"></i> 购买数量（手）</label>
             <select id="quantity">
                 <option value="1">1手</option>
                 <option value="2">2手</option>
@@ -205,7 +309,10 @@
             </select>
         </div>
         
-        <button id="calculate">计算收益率</button>
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>计算中...</p>
+        </div>
         
         <div class="result" id="result">
             <h3>计算结果</h3>
@@ -250,6 +357,12 @@
                 <span class="result-value highlight" id="yearly-profit">--</span>
             </div>
         </div>
+        
+        <div class="button-group">
+            <button id="calculate">
+                <i class="fas fa-calculator"></i> 计算收益率
+            </button>
+        </div>
     </div>
     
     <div class="footer">
@@ -262,6 +375,7 @@
             const contractSelect = document.getElementById('contract');
             const calculateBtn = document.getElementById('calculate');
             const resultDiv = document.getElementById('result');
+            const loadingDiv = document.getElementById('loading');
             
             // 生成未来12个月的合约选项
             function generateContractOptions() {
@@ -289,7 +403,7 @@
                     if (thirdFriday > currentDate) {
                         const option = document.createElement('option');
                         option.value = yearShort + monthPadded;
-                        option.textContent = `${yearShort}${monthPadded} (${date.getFullYear()}年${month}月合约，到期日: ${thirdFriday.getFullYear()}-${(thirdFriday.getMonth()+1).toString().padStart(2, '0')}-${thirdFriday.getDate().toString().padStart(2, '0')})`;
+                        option.textContent = `${yearShort}${monthPadded} (${date.getFullYear()}年${month}月合约)`;
                         option.dataset.expiry = thirdFriday.toISOString();
                         contractSelect.appendChild(option);
                     }
@@ -342,47 +456,89 @@
                     return;
                 }
                 
-                // 获取到期日
-                const expiryDate = new Date(selectedOption.dataset.expiry);
+                // 显示加载状态
+                loadingDiv.style.display = 'block';
+                resultDiv.style.display = 'none';
                 
-                // 计算剩余天数
-                const currentDate = new Date();
-                const oneDay = 24 * 60 * 60 * 1000; // 毫秒/天
-                const daysRemaining = Math.round(Math.abs((expiryDate - currentDate) / oneDay));
+                // 使用setTimeout模拟计算过程，实际使用时可以移除
+                setTimeout(function() {
+                    // 获取到期日
+                    const expiryDate = new Date(selectedOption.dataset.expiry);
+                    
+                    // 计算剩余天数
+                    const currentDate = new Date();
+                    const oneDay = 24 * 60 * 60 * 1000; // 毫秒/天
+                    const daysRemaining = Math.round(Math.abs((expiryDate - currentDate) / oneDay));
+                    
+                    // 计算贴水金额
+                    const discountAmount = basis;
+                    
+                    // 计算年化收益率
+                    const contractMultiplier = 200; // 合约乘数
+                    const investment = price * contractMultiplier;
+                    const returnAmount = discountAmount * contractMultiplier;
+                    
+                    // 年化收益率公式: (收益 / 投资) * (365 / 剩余天数) * 100%
+                    const annualizedReturn = (returnAmount / investment) * (365 / daysRemaining) * 100;
+                    
+                    // 计算总价值和保证金
+                    const totalContractValue = price * contractMultiplier * quantity;
+                    const marginRate = 0.15; // 15%保证金率
+                    const marginRequired = totalContractValue * marginRate;
+                    
+                    // 计算贴水收益总额
+                    const totalDiscount = discountAmount * contractMultiplier * quantity;
+                    
+                    // 计算一年总收益：合约总价值 * 单期年化收益率
+                    const yearlyProfit = totalContractValue * (annualizedReturn / 100);
+                    
+                    // 显示结果
+                    document.getElementById('expiry-date').textContent = expiryDate.toLocaleDateString();
+                    document.getElementById('days-remaining').textContent = daysRemaining + ' 天';
+                    document.getElementById('annualized-return').textContent = annualizedReturn.toFixed(2) + '%';
+                    document.getElementById('quantity-result').textContent = quantity + ' 手';
+                    document.getElementById('total-value').textContent = totalContractValue.toLocaleString() + ' 元';
+                    document.getElementById('margin-required').textContent = marginRequired.toLocaleString() + ' 元';
+                    document.getElementById('total-discount').textContent = totalDiscount.toLocaleString() + ' 元';
+                    document.getElementById('yearly-profit').textContent = yearlyProfit.toLocaleString() + ' 元';
+                    
+                    // 隐藏加载状态，显示结果
+                    loadingDiv.style.display = 'none';
+                    resultDiv.style.display = 'block';
+                    
+                    // 平滑滚动到结果区域
+                    resultDiv.scrollIntoView({ behavior: 'smooth' });
+                }, 800);
+            });
+            
+            // 添加输入框快速清除功能
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                // 添加清除按钮
+                const clearBtn = document.createElement('span');
+                clearBtn.innerHTML = '&times;';
+                clearBtn.style.position = 'absolute';
+                clearBtn.style.right = '10px';
+                clearBtn.style.top = '50%';
+                clearBtn.style.transform = 'translateY(-50%)';
+                clearBtn.style.cursor = 'pointer';
+                clearBtn.style.color = '#999';
+                clearBtn.style.fontSize = '20px';
+                clearBtn.style.display = 'none';
+                input.parentNode.style.position = 'relative';
+                input.parentNode.appendChild(clearBtn);
                 
-                // 计算贴水金额
-                const discountAmount = basis;
+                // 显示/隐藏清除按钮
+                input.addEventListener('input', function() {
+                    clearBtn.style.display = this.value ? 'block' : 'none';
+                });
                 
-                // 计算年化收益率
-                const contractMultiplier = 200; // 合约乘数
-                const investment = price * contractMultiplier;
-                const returnAmount = discountAmount * contractMultiplier;
-                
-                // 年化收益率公式: (收益 / 投资) * (365 / 剩余天数) * 100%
-                const annualizedReturn = (returnAmount / investment) * (365 / daysRemaining) * 100;
-                
-                // 计算总价值和保证金
-                const totalContractValue = price * contractMultiplier * quantity;
-                const marginRate = 0.15; // 15%保证金率
-                const marginRequired = totalContractValue * marginRate;
-                
-                // 计算贴水收益总额
-                const totalDiscount = discountAmount * contractMultiplier * quantity;
-                
-                // 计算一年总收益：合约总价值 * 单期年化收益率
-                const yearlyProfit = totalContractValue * (annualizedReturn / 100);
-                
-                // 显示结果
-                document.getElementById('expiry-date').textContent = expiryDate.toLocaleDateString();
-                document.getElementById('days-remaining').textContent = daysRemaining + ' 天';
-                document.getElementById('annualized-return').textContent = annualizedReturn.toFixed(2) + '%';
-                document.getElementById('quantity-result').textContent = quantity + ' 手';
-                document.getElementById('total-value').textContent = totalContractValue.toLocaleString() + ' 元';
-                document.getElementById('margin-required').textContent = marginRequired.toLocaleString() + ' 元';
-                document.getElementById('total-discount').textContent = totalDiscount.toLocaleString() + ' 元';
-                document.getElementById('yearly-profit').textContent = yearlyProfit.toLocaleString() + ' 元';
-                
-                resultDiv.style.display = 'block';
+                // 清除输入
+                clearBtn.addEventListener('click', function() {
+                    input.value = '';
+                    clearBtn.style.display = 'none';
+                    input.focus();
+                });
             });
         });
     </script>
